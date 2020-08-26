@@ -42,6 +42,7 @@ struct arphdr_ether
 int main(int argc, char **argv)
 {
     int s, err;
+    int toggle = 1;
 
     // Socket
     if ((s = socket(AF_PACKET, SOCK_RAW, htons(ETH_P_ARP))) == -1)
@@ -147,15 +148,41 @@ int main(int argc, char **argv)
             eth_hdr->h_source[3], eth_hdr->h_source[4], eth_hdr->h_source[5]);
 
         // Execute button functions on MAC address match
-        if (strcmp(mac_buf, "ac:63:be:c1:ca:c8") == 0)
+        if (strcmp(mac_buf, "fc:65:de:e4:1d:52") == 0)
         {
-            printf("Button 1 pressed\n");
-            set_light_state(14, "{ \"on\" : true }");
+		switch ( toggle )
+		{
+			case 1 :
+				printf("Button 1 pressed\n");
+				set_light_state(2, "{ \"on\" : true }");
+				set_light_state(3, "{ \"on\" : true }");
+				set_light_state(9, "{ \"on\" : true }");
+				toggle = toggle + 1;
+				break;
+			case 2 :
+				toggle = toggle + 1;
+				break;
+			case 3 :
+				printf("Button 1 pressed\n");
+				set_light_state(2, "{ \"on\" : false }");
+				set_light_state(3, "{ \"on\" : false }");
+				set_light_state(9, "{ \"on\" : false }");
+				toggle = toggle + 1;
+				break;
+			default:
+				toggle = 1;
+		}
+
+
         }
-        else if (strcmp(mac_buf, "50:f5:da:ee:ab:c1") == 0)
+        else if (strcmp(mac_buf, "fc:65:de:e4:4d:55") == 0)
         {
             printf("Button 2 pressed\n");
-            set_light_state(12, "{ \"on\" : true }");
+            set_light_state(2, "{ \"on\" : false }");
+            set_light_state(3, "{ \"on\" : false }");
+            set_light_state(9, "{ \"on\" : false }");
+	    toggle = 1;
+	    sleep(15);
         }
         // <Add futher buttons here>
     }
